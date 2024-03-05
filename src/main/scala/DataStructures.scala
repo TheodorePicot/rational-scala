@@ -2,7 +2,11 @@ import scala.math
 object DataStructures:
 
   /* Définissez la classe Rational qui implémente Ordered. */
-  class Rational(val num: Int, val denum: Int):
+  class Rational(val x: Int, val y: Int) extends Ordered[Rational]:
+
+    def this(x: Int) = this(x, 1)
+
+    require(y != 0, "Cannot create a Rational with denominator 0")
 
     def negate(): Rational = ???
 
@@ -20,6 +24,8 @@ object DataStructures:
     override def equals(obj: Any): Boolean = obj match
       case that: Rational => ???
       case _ => false
+
+    override def compare(that: Rational): Int = ???
 
     /* deux objets égaux doivent avoir le même hashCode */
     override def hashCode(): Int = ???
@@ -49,6 +55,14 @@ object DataStructures:
     override def toFloat(x: Rational): Float = ???
 
     override def toLong(x: Rational): Long = ???
+
+  class Monomial(coefficient: Rational, degree: Int):
+    def eval(x: Rational): Rational = x.mult(coefficient).power(degree)
+
+
+  class Polynomial(list: List[Monomial]):
+    def eval(x: Rational): Rational = list.fold(x)
+
 
   enum RationalalFunction[T]:
     case Const(v: T)
