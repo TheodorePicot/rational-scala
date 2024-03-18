@@ -44,26 +44,28 @@ class TestsDataStructures extends AnyFlatSpec {
 
   "Arbitray Function" should "be defined" in {
 
-    val f_add = ArithExpr.Add(
-      ArithExpr.Var(),
-      ArithExpr.Constant(Rational(2, 4))
+    val f_add = FunctionSymbolic.Add(
+      FunctionSymbolic.Var(),
+      FunctionSymbolic.Constant(Rational(2, 4))
     ) // f = x + 2/4
     evalFor(f_add, Rational(1)) shouldEqual Some(Rational(6, 4)) // f(1) = 1 + 2/4 = 6/4
 
+    val f_sub_simple = FunctionSymbolic.Sub(
+      FunctionSymbolic.Constant(Rational(1)),
+      FunctionSymbolic.Var()
+    )
+    evalFor(f_sub_simple, Rational(3)) shouldEqual Some(Rational(-2))
 
-
-    val f_sub = ArithExpr.Sub(
-      ArithExpr.Mult(
-        ArithExpr.Constant(Rational(3, 5)),
-        ArithExpr.Var()),
-      ArithExpr.Constant(Rational(4, 5))
+    val f_sub = FunctionSymbolic.Sub(
+      FunctionSymbolic.Mult(
+        FunctionSymbolic.Constant(Rational(3, 5)),
+        FunctionSymbolic.Var()),
+      FunctionSymbolic.Constant(Rational(4, 5))
     ) //f = 3/5x - 4/5
-    println(evalFor(f_sub, Rational(2)))
+    println(evalFor(f_sub, Rational(2)).toString)
     evalFor(f_sub, Rational(2)) shouldEqual Some(Rational(2, 5)) // f(2) = 6/5 - 4/5 = 2/5
 
-
-
-    val f_mult = ArithExpr.Mult(ArithExpr.Constant(Rational(1, 2)), ArithExpr.Var()) // f = 1/2x
+    val f_mult = FunctionSymbolic.Mult(FunctionSymbolic.Constant(Rational(1, 2)), FunctionSymbolic.Var()) // f = 1/2x
     evalFor(f_mult, Rational(2)) shouldEqual Some(Rational(1)) // f(2) = 1
   }
 }

@@ -46,6 +46,8 @@ object DataStructures:
         ((x / d) * (y / d)).hashCode()
       }
 
+    override def toString: String = s"$x / $y"
+
   class RationalIsFractional extends Fractional[Rational]:
 
     override def div(x: Rational, y: Rational): Rational = x.div(y)
@@ -54,7 +56,7 @@ object DataStructures:
 
     override def fromInt(x: Int): Rational = Rational(x, 1)
 
-    override def minus(x: Rational, y: Rational): Rational = x.min(y)
+    override def minus(x: Rational, y: Rational): Rational = x.sub(y)
 
     override def plus(x: Rational, y: Rational): Rational = x.add(y)
 
@@ -87,6 +89,16 @@ object DataStructures:
         yield mono.eval(x)
       valeur.sum
 
+    def convert(functionSymbolic: FunctionSymbolic) : Polynomial = ???
+//      functionSymbolic match
+//        case FunctionSymbolic.Var() => Polynomial(Monomial(Rational(1), 1))
+//        case FunctionSymbolic.Constant(v: Rational) => Monomial(v, 1)
+//        case FunctionSymbolic.Neg(e: FunctionSymbolic) => Polynomial(convert()
+//        case FunctionSymbolic.Add(e1: FunctionSymbolic, e2: FunctionSymbolic) =>
+//        case FunctionSymbolic.Sub(e1: FunctionSymbolic, e2: FunctionSymbolic) =>
+//        case FunctionSymbolic.Mult(e1: FunctionSymbolic, e2: FunctionSymbolic) =>
+//        case FunctionSymbolic.Div(e1: FunctionSymbolic, e2: FunctionSymbolic) =>
+
 
 
   enum RationalalFunction[T]:
@@ -96,39 +108,39 @@ object DataStructures:
 //  def eval[T](f: RationalalFunction[T])(implicit fr: Rational[T]): T = ???
 
 
-  enum ArithExpr:
+  enum FunctionSymbolic:
     case Constant(v: Rational)
-    case Neg(e: ArithExpr)
-    case Add(e1: ArithExpr, e2: ArithExpr)
-    case Sub(e1: ArithExpr, e2: ArithExpr)
-    case Mult(e1: ArithExpr, e2: ArithExpr)
-    case Div(e1: ArithExpr, e2: ArithExpr)
+    case Neg(e: FunctionSymbolic)
+    case Add(e1: FunctionSymbolic, e2: FunctionSymbolic)
+    case Sub(e1: FunctionSymbolic, e2: FunctionSymbolic)
+    case Mult(e1: FunctionSymbolic, e2: FunctionSymbolic)
+    case Div(e1: FunctionSymbolic, e2: FunctionSymbolic)
     case Var()
 
-  def eval(e: ArithExpr, x: Rational): Option[Rational] = e match
-    case ArithExpr.Constant(v) => Some(v)
-    case ArithExpr.Neg(v) => eval(v, x).map(i => -i)
-    case ArithExpr.Add(v, u) => eval(v, x).flatMap(i => eval(u, x).map(j => i + j))
-    case ArithExpr.Sub(v, u) => eval(v, x).flatMap(i => eval(u, x).map(j => i - j))
-    case ArithExpr.Mult(v, u) => eval(v, x).flatMap(i => eval(u, x).map(j => i * j))
-    case ArithExpr.Div(v, u) => eval(v, x).flatMap(i => eval(u, x).withFilter(j => !j.equals(0)).map(j => i.div(j)))
-    case ArithExpr.Var() => Some(x)
+  def eval(e: FunctionSymbolic, x: Rational): Option[Rational] = e match
+    case FunctionSymbolic.Constant(v) => Some(v)
+    case FunctionSymbolic.Neg(v) => eval(v, x).map(i => -i)
+    case FunctionSymbolic.Add(v, u) => eval(v, x).flatMap(i => eval(u, x).map(j => i + j))
+    case FunctionSymbolic.Sub(v, u) => eval(v, x).flatMap(i => eval(u, x).map(j => i - j))
+    case FunctionSymbolic.Mult(v, u) => eval(v, x).flatMap(i => eval(u, x).map(j => i * j))
+    case FunctionSymbolic.Div(v, u) => eval(v, x).flatMap(i => eval(u, x).withFilter(j => !j.equals(0)).map(j => i.div(j)))
+    case FunctionSymbolic.Var() => Some(x)
 
-  def evalFor(e: ArithExpr, x: Rational): Option[Rational] =
+  def evalFor(e: FunctionSymbolic, x: Rational): Option[Rational] =
     e match
-      case ArithExpr.Constant(v) => Some(v)
-      case ArithExpr.Neg(v) => for i <- eval(v, x)
+      case FunctionSymbolic.Constant(v) => Some(v)
+      case FunctionSymbolic.Neg(v) => for i <- eval(v, x)
         yield (-i)
-      case ArithExpr.Add(v, u) => for i <- eval(v, x)
+      case FunctionSymbolic.Add(v, u) => for i <- eval(v, x)
                                       j <- eval(u, x)
       yield (i + j)
-      case ArithExpr.Sub(v, u) => for i <- eval(v, x)
+      case FunctionSymbolic.Sub(v, u) => for i <- eval(v, x)
                                       j <- eval(u, x)
       yield (i - j)
-      case ArithExpr.Mult(v, u) => for i <- eval(v, x)
+      case FunctionSymbolic.Mult(v, u) => for i <- eval(v, x)
                                        j <- eval(u, x)
       yield (i * j)
-      case ArithExpr.Div(v, u) => for i <- eval(v, x)
+      case FunctionSymbolic.Div(v, u) => for i <- eval(v, x)
                                       j <- eval(u, x)
                                       if !j.equals(0)
       yield i.div(j)
