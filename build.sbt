@@ -1,4 +1,4 @@
-name := "rational-scala"
+name := "tp"
 
 version := "0.1"
 

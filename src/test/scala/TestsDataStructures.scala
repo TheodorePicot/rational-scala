@@ -68,4 +68,16 @@ class TestsDataStructures extends AnyFlatSpec {
     val f_mult = FunctionSymbolic.Mult(FunctionSymbolic.Constant(Rational(1, 2)), FunctionSymbolic.Var()) // f = 1/2x
     evalFor(f_mult, Rational(2)) shouldEqual Some(Rational(1)) // f(2) = 1
   }
+
+  "Convert" should "be defined" in {
+    val f_add = FunctionSymbolic.Add(
+      FunctionSymbolic.Var(),
+      FunctionSymbolic.Constant(Rational(2, 4))
+    )// f = x + 2/4
+    convert(f_add) shouldEqual Polynomial(List(
+      Monomial(Rational(1, 1), 1),
+      Monomial(Rational(2, 4), 0)
+      )
+    )
+  }
 }

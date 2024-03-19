@@ -1,5 +1,7 @@
+import DataStructures.{FunctionSymbolic, Polynomial}
+
 import scala.math
-import scala.math.Numeric.Implicits._
+import scala.math.Numeric.Implicits.*
 import scala.math.pow
 implicit class PowerInt(i: Int) {
   def ** (b: Int): Int = pow(i, b).intValue
@@ -89,15 +91,7 @@ object DataStructures:
         yield mono.eval(x)
       valeur.sum
 
-    def convert(functionSymbolic: FunctionSymbolic) : Polynomial = ???
-//      functionSymbolic match
-//        case FunctionSymbolic.Var() => Polynomial(Monomial(Rational(1), 1))
-//        case FunctionSymbolic.Constant(v: Rational) => Monomial(v, 1)
-//        case FunctionSymbolic.Neg(e: FunctionSymbolic) => Polynomial(convert()
-//        case FunctionSymbolic.Add(e1: FunctionSymbolic, e2: FunctionSymbolic) =>
-//        case FunctionSymbolic.Sub(e1: FunctionSymbolic, e2: FunctionSymbolic) =>
-//        case FunctionSymbolic.Mult(e1: FunctionSymbolic, e2: FunctionSymbolic) =>
-//        case FunctionSymbolic.Div(e1: FunctionSymbolic, e2: FunctionSymbolic) =>
+
 
 
 
@@ -144,3 +138,52 @@ object DataStructures:
                                       j <- eval(u, x)
                                       if !j.equals(0)
       yield i.div(j)
+
+//  def convert(functionSymbolic: FunctionSymbolic): Polynomial =
+//    functionSymbolic match {
+//      case FunctionSymbolic.Constant(v) =>
+//        Polynomial(List(Monomial(v, 0))) // Constante = degré 0
+//      case FunctionSymbolic.Var() =>
+//        Polynomial(List(Monomial(Rational(1), 1))) // Variable = x^1
+//      case FunctionSymbolic.Neg(v) =>
+//        val subPolynomial = convert(v)
+//        Polynomial(List(Monomial(-subPolynomial.eval(Rational(0)), 0))) // Utilise eval pour obtenir la valeur pour x=0
+//      case FunctionSymbolic.Add(v, u) =>
+//        val polyV = convert(v)
+//        val polyU = convert(u)
+//        Polynomial(mergePolynomials(polyV, polyU))
+//      case FunctionSymbolic.Sub(v, u) =>
+//        val polyV = convert(v)
+//        val polyU = convert(u)
+//        Polynomial(mergePolynomials(polyV, negatePolynomial(polyU)))
+//      case FunctionSymbolic.Mult(v, u) =>
+//        val polyV = convert(v)
+//        val polyU = convert(u)
+//        Polynomial(multiplyPolynomials(polyV, polyU))
+//      case FunctionSymbolic.Div(v, u) =>
+//        val polyV = convert(v)
+//        val polyU = convert(u)
+//        if (polyU.eval(Rational(0)) != Rational(0)) {
+//          Polynomial(dividePolynomials(polyV, polyU))
+//        } else {
+//          // Division par zéro
+//          Polynomial(List(Monomial(Rational(0), 0))) // Retourne un polynôme constant 0
+//        }
+//    }
+
+//  def mergePolynomials(poly1: Polynomial, poly2: Polynomial): List[Monomial] =
+//    (poly1.list ++ poly2.list).groupBy(_.degree).map {
+//      case (degree, monomials) => Monomial(monomials.map(_.coefficient).sum, degree)
+//    }.toList
+//
+//  def negatePolynomial(poly: Polynomial): List[Monomial] =
+//    poly.list.map(m => Monomial(-m.coefficient, m.degree))
+//
+//  def multiplyPolynomials(poly1: Polynomial, poly2: Polynomial): List[Monomial] =
+//    for {
+//      m1 <- poly1.list
+//      m2 <- poly2.list
+//    } yield Monomial(m1.coefficient * m2.coefficient, m1.degree + m2.degree)
+//
+//  def dividePolynomials(numerator: Polynomial, denominator: Polynomial): List[Monomial] =
+//    multiplyPolynomials(numerator, Polynomial(denominator.list.map(m => Monomial(m.coefficient.invert(), m.degree))))
