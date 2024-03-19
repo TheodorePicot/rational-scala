@@ -1,5 +1,6 @@
+import scala.annotation.tailrec
 import scala.math
-import scala.math.Numeric.Implicits._
+import scala.math.Numeric.Implicits.*
 import scala.math.pow
 implicit class PowerInt(i: Int) {
   def ** (b: Int): Int = pow(i, b).intValue
@@ -7,46 +8,47 @@ implicit class PowerInt(i: Int) {
 object DataStructures:
 
   /* Définissez la classe Rational qui implémente Ordered. */
-  class Rational(val x: Int, val y: Int) extends Ordered[Rational]:
+  class Rational(val numerator: Int, val denominator: Int) extends Ordered[Rational]:
 
     def this(x: Int) = this(x, 1)
 
-    require(y != 0, "Cannot create a Rational with denominator 0")
+    require(denominator != 0, "Cannot create a Rational with denominator 0")
 
-    def negate(): Rational = Rational(-x, y)
+    def negate(): Rational = Rational(-numerator, denominator)
 
-    def invert(): Rational = Rational(y, x)
+    def invert(): Rational = Rational(denominator, numerator)
 
-    def add(that: Rational): Rational = Rational(x * that.y + y * that.x, y * that.y)
+    def add(that: Rational): Rational = Rational(numerator * that.denominator + denominator * that.numerator, denominator * that.denominator)
 
-    def sub(that: Rational): Rational = Rational(x * that.y - y * that.x, y * that.y)
+    def sub(that: Rational): Rational = Rational(numerator * that.denominator - denominator * that.numerator, denominator * that.denominator)
 
-    def mult(that: Rational): Rational = Rational(x * that.x, y * that.y)
+    def mult(that: Rational): Rational = Rational(numerator * that.numerator, denominator * that.denominator)
 
-    def div(that: Rational): Rational = Rational(x * that.y, y * that.x)
+    def div(that: Rational): Rational = Rational(numerator * that.denominator, denominator * that.numerator)
 
     def power(degree: Int): Rational =
-      val denum = y ** degree
-      if denum == 1 then Rational(x ** degree) else Rational(x ** degree, denum)
+      val newDenominator = denominator ** degree
+      if newDenominator == 1 then Rational(numerator ** degree) else Rational(numerator ** degree, newDenominator)
 
     /* compare doit être compatible avec l'égalité: this.compare(that) retourne 0 si et seulement si this == that */
     override def equals(obj: Any): Boolean = obj match
-      case that: Rational => this.x * that.y == this.y * that.x
+      case that: Rational => this.numerator * that.denominator == this.denominator * that.numerator
       case _ => false
 
-    override def compare(that: Rational): Int = this.x * that.y - that.x * this.y
+    override def compare(that: Rational): Int = this.numerator * that.denominator - that.numerator * this.denominator
 
     /* deux objets égaux doivent avoir le même hashCode */
     override def hashCode(): Int =
-      def gcd(x: Int, y: Int): Int = y match
+      @tailrec
+      def greatestCommonDivisor(x: Int, y: Int): Int = y match
         case 0 => x
-        case _ => if y > y then gcd(x, y) else gcd(y, x % y)
+        case _ => if y > y then greatestCommonDivisor(x, y) else greatestCommonDivisor(y, x % y)
       {
-        val d = gcd(x, y);
-        ((x / d) * (y / d)).hashCode()
+        val divisor = greatestCommonDivisor(numerator, denominator);
+        ((numerator / divisor) * (denominator / divisor)).hashCode()
       }
 
-    override def toString: String = s"$x / $y"
+    override def toString: String = s"$numerator / $denominator"
 
   class RationalIsFractional extends Fractional[Rational]:
 
@@ -64,15 +66,15 @@ object DataStructures:
 
     override def parseString(str: String): Option[Rational] = ???
 
-    override def negate(x: Rational): Rational = x.negate()
+    override def negate(rationalNumber: Rational): Rational = rationalNumber.negate()
 
-    override def toInt(x: Rational): Int = x.x / x.y
+    override def toInt(rationalNumber: Rational): Int = rationalNumber.numerator / rationalNumber.denominator
 
-    override def toDouble(x: Rational): Double = x.x.toDouble / x.y.toDouble
+    override def toDouble(rationalNumber: Rational): Double = rationalNumber.numerator.toDouble / rationalNumber.denominator.toDouble
 
-    override def toFloat(x: Rational): Float = x.x.toFloat / x.y.toFloat
+    override def toFloat(rationalNumber: Rational): Float = rationalNumber.numerator.toFloat / rationalNumber.denominator.toFloat
 
-    override def toLong(x: Rational): Long = x.x.toLong / x.y.toLong
+    override def toLong(rationalNumber: Rational): Long = rationalNumber.numerator.toLong / rationalNumber.denominator.toLong
 
 //    override def power(x: Rational, degree : Int): Rational = x.power(degree)
 
